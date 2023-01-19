@@ -257,7 +257,7 @@ def star_game():
                     bullets_count -= 1
                 elif not flagshot:
                     flagshot = True
-                for i in bullets:
+        for i in bullets:
             plathits = pygame.sprite.spritecollideany(i, plat_sprites)
             if plathits:
                 bullets.remove(i)

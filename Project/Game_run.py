@@ -24,7 +24,6 @@ f = open('txt_files/record.txt', 'r').read()
 if f:
     f = 0
 
-
 def load_image(name, colorkey=(0, 0, 0)):
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
@@ -39,7 +38,6 @@ def load_image(name, colorkey=(0, 0, 0)):
     else:
         image = image.convert_alpha()
     return image
-
 
 def show_menu():
     global f
@@ -257,6 +255,7 @@ def star_game():
                     bullets_count -= 1
                 elif not flagshot:
                     flagshot = True
+                    
         for i in bullets:
             plathits = pygame.sprite.spritecollideany(i, plat_sprites)
             if plathits:

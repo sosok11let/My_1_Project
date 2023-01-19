@@ -106,3 +106,36 @@ def show_menu():
         exit_game.draw(500, 600, "Выход", quit, 50)
         pygame.display.update()
     pygame.quit()
+
+    
+def you_lost():
+    size = width, height = 600, 600
+    screen = pygame.display.set_mode(size)
+    image_menu = load_image("Fon_gl.png")
+    ship_top = screen.get_height() - image_menu.get_height()
+    ship_left = screen.get_width() / 2 - image_menu.get_width() / 2
+    running2 = True
+    pygame.mouse.set_visible(True)
+    start = Button(screen, 300, 65)
+    exit_game = Button(screen, 170, 70)
+    font = pygame.font.Font('data/font_super_game.ttf', 30)
+    gameover.play()
+
+    while running2:
+        global f
+        pygame.time.delay(20)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running2 = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                botton_sound.play()
+        screen.blit(image_menu, (ship_left, ship_top))
+        start.draw(145, 200, "Играть снова", star_game, 50)
+        exit_game.draw(200, 350, "Выход", show_menu, 50)
+        text = font.render(f'Score:{score}', False, (255, 0, 0))
+        if score > int(f):
+            open('txt_files/record.txt', 'w').write(str(score))
+        screen.blit(text, (210, 120))
+        print_text("GAME OVER", 185, 80, (255, 0, 0))
+        pygame.display.update()
+    pygame.quit()

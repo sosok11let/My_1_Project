@@ -55,3 +55,54 @@ def show_menu():
     start = Button(screen, 170, 65)
     exit_game = Button(screen, 170, 70)
     fon_ino = pygame.sprite.Group()
+    
+    class Mobs(pygame.sprite.Sprite):
+        image = pygame.image.load('data/poletnorm.png')
+
+        def __init__(self, screen):
+            super().__init__(fon_ino)
+            self.screen = screen
+            self.image = Mobs.image
+            self.rect = self.image.get_rect(center=(200, 550))
+            self.bival = set()
+            self.flag = False
+
+        def rendering(self):
+            fon_ino.draw(self.screen)
+
+        def update(self):
+            if not self.flag:
+                if self.rect.top <= 600:
+                    self.rect.top += 3
+                if self.rect.top == 600:
+                    self.flag = True
+
+            else:
+                self.rect.top -= 3
+                if self.rect.top <= 400:
+                    self.flag = False
+
+    fon_mob = Mobs(screen)
+
+    while running2:
+        pygame.time.delay(20)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running2 = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                botton_sound.play()
+        screen.blit(image_menu, (ship_left, ship_top))
+        screen.blit(image_play, (1100, 600))
+        screen.blit(image_glock, (1090, 650))
+        fon_mob.update()
+        fon_ino.draw(screen)
+        f = open('txt_files/record.txt', 'r').read()
+        print_text(f'Record: {f}', 155, 30, (255, 255, 100))
+        print_text('D - Идти вправо', 780, 560, (255, 255, 130))
+        print_text('A - Идти влево', 780, 590, (255, 255, 130))
+        print_text('Spase - Прыжок', 780, 620, (255, 255, 130))
+        print_text('ЛКМ - Выстрел', 780, 650, (255, 255, 130))
+        start.draw(500, 200, "Играть", star_game, 50)
+        exit_game.draw(500, 600, "Выход", quit, 50)
+        pygame.display.update()
+    pygame.quit()

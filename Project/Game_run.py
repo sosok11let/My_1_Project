@@ -257,3 +257,131 @@ def star_game():
                     bullets_count -= 1
                 elif not flagshot:
                     flagshot = True
+                for i in bullets:
+            plathits = pygame.sprite.spritecollideany(i, plat_sprites)
+            if plathits:
+                bullets.remove(i)
+                flagbullets = True
+            else:
+                flagbullets = False
+
+        for bullet in bullets[:]:
+            bullet.update()
+            if not screen.get_rect().collidepoint(bullet.pos):
+                bullets.remove(bullet)
+                player_sprites.remove(bullet)
+                flagbullets = True
+            else:
+                flagbullets = False
+
+        screen.blit(image, (ship_left, ship_top))
+
+        for bullet in bullets:
+            bullet.draw(screen)
+
+        playerhits = pygame.sprite.spritecollide(player, mobs_sprites, False)
+        for i in bullets:
+            bullethits = pygame.sprite.spritecollideany(i, mobs_sprites)
+
+            if bullethits:
+                bullets.remove(i)
+                mobs_sprites.remove(bullethits)
+                score += 1
+                bullets_count += 2
+
+        if bullets_count <= 0 and flagbullets:
+            pygame.mixer.music.stop()
+            mobs_sprites.remove(mobs_sprites)
+            you_lost()
+
+        text_bullets = font.render(f'Bullets:{bullets_count}', False, (0, 0, 0))
+        screen.blit(text_bullets, (1000, 700))
+
+        text = font.render(f'Score:{score}', False, (0, 0, 0))
+        screen.blit(text, (50, 700))
+
+        screen.blit(image2, (95, 325))
+        screen.blit(image3, (900, 270))
+        screen.blit(image4, (450, 500))
+
+        player.update(left, right, up, platf)
+        player.collide(306, 145, platf)
+
+        randomspeedufo = [3, 4, 5, 6, 7, 8]
+        if len(mobs_sprites) <= 3:
+            for i in range(6):
+                randomspeedufo_choise = random.choice(randomspeedufo)
+                mob = Mobs(screen, randomspeedufo_choise)
+                randomspeedufo.remove(randomspeedufo_choise)
+
+        mobs_sprites.update()
+        mobs_sprites.draw(screen)
+
+        if left:
+            if up:
+                screen.blit(image_jump, (player.rect.x, player.rect.y))
+            else:
+                screen.blit(image_stay, (player.rect.x, player.rect.y))
+            leftorright = True
+        if right:
+            if up:
+                screen.blit(image_jump_right, (player.rect.x, player.rect.y))
+            else:
+                screen.blit(image_stay_right, (player.rect.x, player.rect.y))
+            leftorright = False
+        if up:
+            if leftorright:
+                screen.blit(image_jump, (player.rect.x, player.rect.y))
+            else:
+                screen.blit(image_jump_right, (player.rect.x, player.rect.y))
+        else:
+            if leftorright:
+                screen.blit(image_stay, (player.rect.x, player.rect.y))
+            else:
+                screen.blit(image_stay_right, (player.rect.x, player.rect.y))
+
+        cursor = load_image('cursor.png').convert_alpha()
+        for i in mobs_sprites:
+            x, y = pygame.mouse.get_pos()
+            ax, ay, bx, by = i.rect
+            for i in range(ax, ax + 80):
+                for k in range(ay, ay + 62):
+                    if x == i and y == k:
+                        cursor = load_image('cursorred.png').convert_alpha()
+                        xxx, yyy = pygame.mouse.get_pos()
+                        screen.blit(cursor, (xxx - 16, yyy - 16))
+
+        if playerhits:
+            player.rect.left = 600
+            player.rect.top = 400
+            hp -= 1
+
+        if player.rect.top >= 1000:
+            player.rect.left = 600
+            player.rect.top = 400
+            hp -= 1
+
+        if hp <= 0:
+            pygame.mixer.music.stop()
+            mobs_sprites.remove(mobs_sprites)
+            you_lost()
+
+        print_hp(hp, hp_x)
+
+        if pygame.mouse.get_focused():
+            x, y = pygame.mouse.get_pos()
+            screen.blit(cursor, (x - 16, y - 16))
+
+        blit_point_to_mouse(screen, ak47, *ak47_2.center)
+
+        pygame.display.flip()
+
+    pygame.quit()
+
+
+if __name__ == '__main__':
+    try:
+        show_menu()
+    except pygame.error:
+        pass
+

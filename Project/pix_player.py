@@ -79,3 +79,98 @@ platfff3 = Platforms_3()
 platf.append(platfff)
 platf.append(platfff2)
 platf.append(platfff3)
+
+
+flag = False
+
+speed_move = 7
+GRAVITY = 0.20
+PLAY_JUMP = 10
+
+
+class Player(pygame.sprite.Sprite):
+
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((40, 60))
+        self.image.fill((113, 182, 185))
+        self.xvel = 0
+        self.yvel = 0
+        self.ongravity = False
+        self.startX = x
+        self.startY = y
+        self.rect = self.image.get_rect(center=(600, 250))
+        self.speedy = 15
+        self.image.set_colorkey("red")
+        self.bivalie = set()
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    def update(self, left, right, up, platf):
+        if up:
+            if self.ongravity:
+                self.yvel = -PLAY_JUMP
+
+        if left:
+            self.xvel = -speed_move
+
+        if right:
+            self.xvel = speed_move
+
+        if not(left or right):
+            self.xvel = 0
+
+        if not self.ongravity:
+            self.yvel += GRAVITY
+
+        self.ongravity = False
+        self.rect.y += self.yvel
+        self.collide(0, self.yvel, platf)
+        self.rect.x += self.xvel
+        self.collide(self.xvel, 0, platf)
+
+
+        if self.rect.left < -50:
+            self.rect.left = 1200
+
+        if self.rect.left > 1250:
+            self.rect.right = 0
+
+        self.timer = pygame.time.get_ticks() // 250
+        if self.timer not in self.bivalie:
+            self.bivalie.add(self.timer)
+            if self.rect.left == platfff.rect.right:
+                self.rect.left += 50
+
+            if self.rect.right == platfff.rect.left:
+                self.rect.right -= 50
+
+            if self.rect.right == platfff3.rect.left:
+                self.rect.right -= 50
+
+            if self.rect.left == platfff3.rect.right:
+                self.rect.left += 50
+
+            if self.rect.right == platfff2.rect.left:
+                self.rect.right -= 50
+
+            if self.rect.left == platfff2.rect.right:
+                self.rect.left += 50
+
+    def collide(self, xvel, yvel, platf):
+        for pl in platf:
+            if pygame.sprite.collide_rect(self, pl):
+                if xvel > 0:
+                    self.rect.right = pl.rect.left
+                if xvel < 0:
+                    self.rect.left = pl.rect.right
+                if yvel > 0:
+                    self.rect.bottom = pl.rect.top
+                    self.ongravity = True
+                    self.yvel = 0
+                if yvel < 0:
+                    self.rect.top = pl.rect.bottom
+                    self.yvel = 0
+
+

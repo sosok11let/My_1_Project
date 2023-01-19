@@ -249,7 +249,7 @@ def star_game():
                 if event.key == pygame.K_SPACE:
                     up = False
             if event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1 and flagshot:
+                if event.button == 1 and flagshot and bullets_count >= 0:
                     bull = Bullet(*pos)
                     bullets.append(bull)
                     player_sprites.add(bull)

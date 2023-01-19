@@ -294,8 +294,12 @@ def star_game():
             mobs_sprites.remove(mobs_sprites)
             you_lost()
 
-        text_bullets = font.render(f'Bullets:{bullets_count}', False, (0, 0, 0))
-        screen.blit(text_bullets, (1000, 700))
+        if bullets_count >= 0:
+            text_bullets = font.render(f'Bullets:{bullets_count}', False, (0, 0, 0))
+            screen.blit(text_bullets, (1000, 700))
+        else:
+            text_bullets = font.render(f'Bullets:{0}', False, (0, 0, 0))
+            screen.blit(text_bullets, (1000, 700))
 
         text = font.render(f'Score:{score}', False, (0, 0, 0))
         screen.blit(text, (50, 700))

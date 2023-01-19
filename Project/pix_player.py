@@ -174,3 +174,68 @@ class Player(pygame.sprite.Sprite):
                     self.yvel = 0
 
 
+class Mobs(pygame.sprite.Sprite):
+    image = load_image("poletnorm.png")
+
+    def __init__(self, screen, randomspeedufo):
+        super().__init__(mobs_sprites)
+        self.screen = screen
+        self.image = Mobs.image
+        self.screen_rect = screen.get_rect()
+        self.rightTF = random.choice([True, False])
+        if self.rightTF:
+            self.leftTF = False
+            self.rect = self.image.get_rect(center=(-50, random.randrange(-40, 50)))
+        else:
+            self.leftTF = True
+            self.rect = self.image.get_rect(center=(1250, random.randrange(-40, 50)))
+        self.vx = randomspeedufo
+
+        self.yvel = 0
+
+        self.rightonly = random.randrange(100, 150)
+        self.leftonly = random.randrange(1000, 1100)
+        self.right_pora_nalevo = random.randrange(1000, 1150)
+        self.left_pora_napravo = random.randrange(50, 200)
+
+        self.leftorright = False
+        self.opusch = False
+
+    def rendering(self):
+        mobs_sprites.draw(self.screen)
+
+    def update(self):
+        if self.rightTF:
+            if not self.leftorright:
+                if self.rect.right < width + 150:
+                    self.rect.right += self.vx
+                if self.rect.right < self.rightonly and not self.opusch:
+                    self.rect.top += self.vx * 0.6
+                else:
+                    self.opusch = True
+                if self.rect.right >= self.right_pora_nalevo:
+                    self.leftorright = True
+            elif self.leftorright:
+                if self.rect.left >= self.left_pora_napravo:
+                    self.rect.left -= self.vx
+                else:
+                    self.leftorright = False
+
+        if not self.rightTF:
+            if not self.leftorright:
+                if self.rect.left >= self.left_pora_napravo:
+                    self.rect.left -= self.vx
+                if self.rect.left > self.leftonly and not self.opusch:
+                    self.rect.top += self.vx * 0.6
+                else:
+                    self.opusch = True
+                if self.rect.left <= self.left_pora_napravo:
+                    self.leftorright = True
+            elif self.leftorright:
+                if self.rect.right <= self.right_pora_nalevo:
+                    self.rect.right += self.vx
+                else:
+                    self.leftorright = False
+
+    def ret(self):
+        return self.rect
